@@ -28,7 +28,7 @@ export const IntroSequence: React.FC = () => {
       hlWord: 'Fragments'
     },
     {
-      image: '/assets/demolished.jpg',
+      image: '/assets/destroyedcity.jpg',
       narrative: ' Kingdoms began to collapse into fragmentation errors.',
 
     },
