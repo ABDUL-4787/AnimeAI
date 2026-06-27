@@ -11,6 +11,7 @@ export const LandingPage: React.FC = () => {
   const [demoStep, setDemoStep] = useState(0);
   const [soundOn, setSoundOn] = useState(sound.isSoundEnabled());
   const [hoveredWorld, setHoveredWorld] = useState<string | null>(null);
+  const [activeVideoUrl, setActiveVideoUrl] = useState<string | null>(null);
 
   const startButtonRoute = state.character ? "/world" : "/login";
 
@@ -251,7 +252,7 @@ export const LandingPage: React.FC = () => {
                 🌲 Enter Python Forest
               </Link>
               <button
-                onClick={() => { sound.playClick(); setShowDemo(true); }}
+                onClick={() => { sound.playClick(); setActiveVideoUrl('/assets/opening_cinematic.mp4'); }}
                 className="px-6 py-3.5 bg-slate-950/80 border border-purple-500/25 text-slate-300 hover:text-white font-extrabold uppercase text-xs tracking-widest rounded-xl transition-all hover:scale-[1.03]"
               >
                 🎬 Watch Opening Cinematic
@@ -487,7 +488,7 @@ export const LandingPage: React.FC = () => {
               </p>
 
               <button
-                onClick={() => { sound.playClick(); setShowDemo(true); }}
+                onClick={() => { sound.playClick(); setActiveVideoUrl('/assets/origin_trailer.mp4'); }}
                 className="px-4 py-2 bg-slate-950/80 border border-purple-500/25 hover:border-cyan-400 text-slate-300 hover:text-white font-extrabold uppercase text-[8px] tracking-widest rounded transition-all cursor-pointer flex items-center gap-1"
               >
                 ▶ Watch Origin Trailer
@@ -557,6 +558,35 @@ export const LandingPage: React.FC = () => {
                   {demoStep === demoScreens.length - 1 ? "Finish Demo" : "Continue"} →
                 </button>
               </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Video Player Modal */}
+      <AnimatePresence>
+        {activeVideoUrl && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 px-6">
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="w-full max-w-4xl relative"
+            >
+              {/* Close Button */}
+              <button 
+                onClick={() => { sound.playClick(); setActiveVideoUrl(null); }}
+                className="absolute -top-10 right-0 text-slate-400 hover:text-white transition-colors cursor-pointer text-sm font-bold font-mono"
+              >
+                [ CLOSE TRAILER X ]
+              </button>
+
+              <video 
+                src={activeVideoUrl} 
+                controls 
+                autoPlay 
+                className="w-full rounded-2xl border border-purple-500/35 shadow-[0_0_50px_rgba(168,85,247,0.35)]"
+              />
             </motion.div>
           </div>
         )}
