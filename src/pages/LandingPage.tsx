@@ -5,11 +5,12 @@ import { sound } from '../utils/audio';
 import { useGame } from '../context/GameContext';
 
 export const LandingPage: React.FC = () => {
-  const navigate = useNavigate();
   const { state } = useGame();
+  const navigate = useNavigate();
   const [showDemo, setShowDemo] = useState(false);
   const [demoStep, setDemoStep] = useState(0);
   const [soundOn, setSoundOn] = useState(sound.isSoundEnabled());
+  const [hoveredWorld, setHoveredWorld] = useState<string | null>(null);
 
   const startButtonRoute = state.character ? "/world" : "/login";
 
@@ -76,17 +77,54 @@ export const LandingPage: React.FC = () => {
     }
   };
 
+  const worldDetails: Record<string, { title: string; desc: string }> = {
+    'python': { title: 'Python Forest', desc: 'The starting zone. Realign core variables and master basic data structures.' },
+    'ml': { title: 'ML Volcano', desc: 'A volcanic caldera where intelligent algorithms learn to adapt and forecast.' },
+    'dsa': { title: 'DSA Valley', desc: 'A crystalline cavern hosting abstract structures and high-speed sorting nodes.' },
+    'deeplearning': { title: 'Deep Learning Academy', desc: 'The training base of neural masters crafting multi-layered synapses.' },
+    'llm': { title: 'LLM Galaxy', desc: 'The birthplace of semantic intelligence and generative language models.' },
+    'rag': { title: 'RAG Library', desc: 'The infinite archives guarded by vector indices and contextual search cores.' },
+    'agent': { title: 'AI Agent Empire', desc: 'The domain of autonomous agents coordinating tools and planning trees.' },
+    'cloud': { title: 'Cloud Citadel', desc: 'The floating infrastructure citadel powering every kingdom across the land.' }
+  };
+
   return (
     <div className="min-h-screen bg-[#030014] text-slate-100 relative overflow-x-hidden flex flex-col justify-between font-sans">
-      
+
+      {/* CSS Animations style tag */}
+      <style>{`
+        @keyframes fly-left {
+          0% { transform: translateX(110vw) translateY(10vh); opacity: 0; }
+          10% { opacity: 0.7; }
+          90% { opacity: 0.7; }
+          100% { transform: translateX(-10vw) translateY(12vh); opacity: 0; }
+        }
+        @keyframes fly-right {
+          0% { transform: translateX(-10vw) translateY(30vh); opacity: 0; }
+          15% { opacity: 0.5; }
+          85% { opacity: 0.5; }
+          100% { transform: translateX(110vw) translateY(25vh); opacity: 0; }
+        }
+        @keyframes blink-light {
+          0%, 100% { opacity: 0.2; }
+          50% { opacity: 1; }
+        }
+        @keyframes drift-cloud {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100vw); }
+        }
+        .animate-fly-left { animation: fly-left 15s linear infinite; }
+        .animate-fly-right { animation: fly-right 22s linear infinite; }
+        .animate-drift-cloud-slow { animation: drift-cloud 120s linear infinite; }
+        .animate-drift-cloud-fast { animation: drift-cloud 70s linear infinite; }
+      `}</style>
+
       {/* Header Navigation Bar */}
       <header className="fixed top-0 inset-x-0 h-16 z-50 bg-[#030014]/75 backdrop-blur-md border-b border-purple-500/10">
         <div className="max-w-7xl mx-auto h-full px-6 flex items-center justify-between">
-          
-          {/* Logo Left */}
           <Link to="/" className="flex items-center gap-2" onClick={() => sound.playClick()}>
             <div className="w-8 h-8 rounded bg-gradient-to-br from-purple-600 to-cyan-400 p-[1px]">
-              <div className="w-full h-full bg-slate-950 flex items-center justify-center rounded text-sm font-black text-cyan-400">
+              <div className="w-full h-full bg-slate-950 flex items-center justify-center rounded text-sm font-black text-cyan-400 font-mono">
                 A
               </div>
             </div>
@@ -98,16 +136,13 @@ export const LandingPage: React.FC = () => {
             </div>
           </Link>
 
-          {/* Nav Links Center */}
           <nav className="hidden md:flex items-center gap-8 text-[11px] font-mono font-bold tracking-widest uppercase text-slate-400">
             <Link to="/" className="text-purple-400 hover:text-white transition-colors">Home</Link>
+            <a href="#timeline" className="hover:text-white transition-colors">Journey Timeline</a>
             <a href="#features" className="hover:text-white transition-colors">Features</a>
-            <a href="#worlds" className="hover:text-white transition-colors">Worlds</a>
-            <a href="#how" className="hover:text-white transition-colors">How it Works</a>
-            <a href="#roadmap" className="hover:text-white transition-colors">Roadmap</a>
+            <a href="#why-fail" className="hover:text-white transition-colors">Compare</a>
           </nav>
 
-          {/* Right actions */}
           <div className="flex items-center gap-4">
             <button
               onClick={toggleSound}
@@ -132,98 +167,154 @@ export const LandingPage: React.FC = () => {
               ⚔️ Start Adventure
             </Link>
           </div>
-
         </div>
       </header>
 
       {/* Main Container */}
-      <main className="max-w-7xl mx-auto px-6 pt-20 pb-12 z-10 w-full flex-grow flex flex-col gap-8">
-        
-        {/* HERO SECTION WITH BACKDROP IMAGE */}
-        <section className="relative w-full rounded-2xl border border-purple-500/15 overflow-hidden min-h-[460px] md:min-h-[500px] shadow-2xl flex items-center">
-          
-          {/* Backdrop Image */}
-          <div 
-            className="absolute inset-0 bg-cover bg-center z-0 pointer-events-none opacity-85"
+      <main className="max-w-7xl mx-auto px-6 pt-20 pb-12 z-10 w-full flex-grow flex flex-col gap-12">
+
+        {/* PARALLAX HERO SECTION */}
+        <section className="relative w-full rounded-3xl border border-purple-500/15 overflow-hidden min-h-[550px] md:min-h-[600px] shadow-2xl flex items-center bg-slate-950">
+
+          {/* Parallax Layer 1: Background Landscape */}
+          <div
+            className="absolute inset-0 bg-cover bg-center z-0 pointer-events-none opacity-50"
             style={{ backgroundImage: 'url("/assets/landing_hero.png")' }}
           />
 
-          {/* Left Gradient Cover */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#030014] via-[#030014]/80 to-transparent z-10 pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#030014] via-transparent to-transparent z-10 pointer-events-none" />
+          {/* Glowing Green Python Forest in the distance (glowing Middleground beacon) */}
+          <div className="absolute left-[70%] top-[35%] -translate-x-1/2 -translate-y-1/2 z-10 pointer-events-none">
+            {/* The bright green gateway glow */}
+            <div className="w-24 h-24 rounded-full bg-green-500/15 filter blur-xl animate-pulse" />
+            <div className="w-10 h-10 rounded-full bg-green-400/30 filter blur-md absolute top-7 left-7 animate-ping" />
+            <div className="w-6 h-6 rounded-full bg-green-400/80 absolute top-9 left-9 shadow-[0_0_20px_#22c55e] animate-pulse" />
+          </div>
 
-          {/* Left Content Overlay */}
-          <div className="relative z-20 pl-6 md:pl-12 py-12 max-w-lg md:max-w-xl space-y-5 text-left">
-            <div className="space-y-1">
-              <h1 className="text-2xl md:text-4xl font-extrabold tracking-widest uppercase text-white leading-tight font-mono">
-                LEARNING <br />
-                PROGRAMMING
+          {/* Animated Background Details: Drones & Cars */}
+          <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
+            {/* Blinking Windows */}
+            <div className="absolute top-[20%] right-[30%] w-1.5 h-1.5 bg-yellow-400 rounded-full animate-[pulse_1s_infinite]" />
+            <div className="absolute top-[28%] right-[15%] w-1 h-1 bg-yellow-400 rounded-full animate-[pulse_1.5s_infinite]" />
+            <div className="absolute top-[42%] right-[40%] w-2 h-1 bg-cyan-400 rounded-full animate-[pulse_2s_infinite]" />
+
+            {/* Flying Vehicles */}
+            <div className="absolute w-6 h-1.5 bg-purple-500/50 rounded-full animate-fly-left filter blur-[1px]" />
+            <div className="absolute w-8 h-2 bg-cyan-500/40 rounded-full animate-fly-right filter blur-[1.5px]" />
+
+            {/* Moving digital clouds */}
+            <div className="absolute top-8 left-0 w-96 h-20 bg-purple-900/5 rounded-full filter blur-2xl animate-drift-cloud-slow" />
+            <div className="absolute top-28 left-0 w-80 h-16 bg-cyan-900/5 rounded-full filter blur-2xl animate-drift-cloud-fast" />
+          </div>
+
+          {/* Gradient depth masks */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#030014] via-[#030014]/90 to-transparent z-15 pointer-events-none" />
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#030014] via-transparent to-transparent z-15 pointer-events-none" />
+
+          {/* Left/Center Text & Narrative */}
+          <div className="relative z-20 pl-6 md:pl-16 py-12 max-w-lg md:max-w-2xl space-y-6 text-left flex flex-col justify-center min-h-[460px]">
+            <div className="space-y-2">
+              <span className="text-[10px] text-cyan-400 font-mono font-bold tracking-widest uppercase border border-cyan-400/30 px-2 py-0.5 rounded bg-slate-950/80 inline-block">
+                SYS::REBOOT_PROLOGUE
+              </span>
+              <h1 className="text-3xl md:text-5xl font-black tracking-widest uppercase text-white leading-tight font-mono">
+                THE WORLD HAS <br />
+                FORGOTTEN CODE.
               </h1>
-              
               <div className="flex items-center gap-2 text-xs md:text-sm font-mono font-bold tracking-widest text-purple-400 uppercase">
                 <span>✦</span>
-                <span>SHOULD FEEL LIKE</span>
+                <span>BECOME THE HERO WHO</span>
                 <span>✦</span>
               </div>
-
-              {/* Painted Massive Cursive PLAYING */}
               <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight uppercase leading-none font-sans italic text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-cyan-200 drop-shadow-[0_0_15px_rgba(6,182,212,0.6)]">
-                PLAYING
-              </h1>
-
-              <h1 className="text-xl md:text-3xl font-extrabold tracking-widest uppercase text-white leading-tight font-mono">
-                AN ADVENTURE.
+                RESTORES IT.
               </h1>
             </div>
 
-            <p className="text-[11px] md:text-xs text-slate-300 font-mono leading-relaxed max-w-sm">
-              Step into AnimeAI, where code is magic, bugs are monsters, and you are the hero who restores a broken world.
+            <p className="text-[11px] md:text-xs text-slate-300 font-mono leading-relaxed max-w-md">
+              Learn AI by exploring futuristic zones, completing alchemical quests, solving Monaco coding challenges, defeating syntax bugs, and unlocking lost kingdoms.
             </p>
 
-            <div className="flex gap-3 pt-2">
+            {/* Action buttons */}
+            <div className="flex flex-wrap gap-3.5 pt-2">
               <Link
                 to={startButtonRoute}
                 onClick={() => sound.playQuestStart()}
-                className="px-5 py-2.5 bg-gradient-to-r from-purple-600 to-cyan-500 text-white font-extrabold uppercase text-[10px] tracking-widest rounded transition-all hover:scale-102 flex items-center gap-1.5 shadow-[0_0_15px_rgba(168,85,247,0.3)]"
+                className="px-6 py-3.5 bg-gradient-to-r from-purple-600 via-fuchsia-600 to-cyan-500 text-slate-950 font-black uppercase text-xs tracking-widest rounded-xl transition-all hover:scale-[1.03] flex items-center gap-2 shadow-[0_0_20px_rgba(168,85,247,0.4)]"
               >
-                ⚔️ Start Adventure
+                ⚔️ Begin Your Journey
+              </Link>
+              <Link
+                to={state.character ? "/world/python" : "/login"}
+                onClick={() => sound.playQuestStart()}
+                className="px-6 py-3.5 bg-green-950/40 border border-green-500/50 hover:border-green-400 text-green-400 hover:text-white font-extrabold uppercase text-xs tracking-widest rounded-xl transition-all hover:scale-[1.03] flex items-center gap-2 shadow-[0_0_15px_rgba(34,197,94,0.15)]"
+              >
+                🌲 Enter Python Forest
               </Link>
               <button
                 onClick={() => { sound.playClick(); setShowDemo(true); }}
-                className="px-5 py-2.5 bg-slate-950/80 border border-purple-500/20 text-slate-300 hover:text-white font-extrabold uppercase text-[10px] tracking-widest rounded transition-all hover:scale-102 flex items-center gap-1.5"
+                className="px-6 py-3.5 bg-slate-950/80 border border-purple-500/25 text-slate-300 hover:text-white font-extrabold uppercase text-xs tracking-widest rounded-xl transition-all hover:scale-[1.03]"
               >
-                ▶ Watch Demo
+                🎬 Watch Opening Cinematic
               </button>
             </div>
           </div>
 
-          {/* RIGHT FLOATING WORLD NODES OVER METROPOLIS */}
-          <div className="hidden lg:block absolute inset-y-0 right-0 left-1/2 z-20 pointer-events-auto">
-            
-            {/* Python Forest Node (Unlocked) */}
-            <div 
-              style={{ left: '10%', top: '48%' }} 
-              onClick={() => { sound.playQuestStart(); navigate('/world/python'); }}
-              className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer group bg-slate-950/90 border border-green-500/60 p-2.5 rounded-lg text-center min-w-[100px] shadow-[0_0_15px_rgba(34,197,94,0.3)] hover:scale-105 transition-all"
+          {/* Foreground Layer: Large Protagonist Cutout */}
+          <div className="hidden lg:block absolute right-0 bottom-0 w-[42%] h-[90%] z-20 pointer-events-none overflow-hidden">
+            <motion.div
+              animate={{ y: [0, -8, 0] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+              className="w-full h-full bg-contain bg-bottom bg-no-repeat relative"
+              style={{ backgroundImage: 'url("/assets/char_purple_shadow.png")', opacity: 0.95 }}
             >
-              <div className="text-[9px] font-bold text-white tracking-widest uppercase">Python Forest</div>
-              <div className="text-[8px] font-bold text-green-400 tracking-wider uppercase mt-1">Unlocked</div>
+              {/* Floating Companion beside them */}
+              <div className="absolute left-6 top-16 animate-[float_4s_ease-in-out_infinite]">
+                <svg className="w-16 h-16 filter drop-shadow-[0_0_10px_#00f2fe]" viewBox="0 0 100 100">
+                  <polygon points="50,20 68,48 50,75 32,48" fill="#090714" stroke="#00f2fe" strokeWidth="2.5" />
+                  <circle cx="44" cy="45" r="2" fill="#00f2fe" />
+                  <circle cx="56" cy="45" r="2" fill="#00f2fe" />
+                </svg>
+              </div>
+
+              {/* Floating holographic screens drifting around them */}
+              <div className="absolute right-12 top-40 bg-slate-950/70 border border-purple-500/25 px-2.5 py-1.5 rounded-lg text-[8px] font-mono text-purple-300 select-none animate-pulse">
+                &gt;&gt; weapon = "Sword" <br />
+                &gt;&gt; player = "Kai"
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Interactive World Node Overlays */}
+          <div className="hidden lg:block absolute inset-y-0 right-0 left-1/2 z-30 pointer-events-auto">
+
+            {/* Python Forest Node (Unlocked and glowing green) */}
+            <div
+              style={{ left: '26%', top: '48%' }}
+              onClick={() => { sound.playQuestStart(); navigate('/world/python'); }}
+              onMouseEnter={() => { sound.playClick(); setHoveredWorld('python'); }}
+              onMouseLeave={() => setHoveredWorld(null)}
+              className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer group bg-slate-950/95 border border-green-500 px-3 py-2 rounded-xl text-center min-w-[110px] shadow-[0_0_20px_rgba(34,197,94,0.5)] hover:scale-105 transition-all"
+            >
+              <div className="text-[8px] font-black text-white tracking-widest uppercase">Python Forest</div>
+              <div className="text-[8px] font-bold text-green-400 tracking-wider uppercase mt-1 animate-pulse">🌲 Unlocked</div>
             </div>
 
             {/* Locked Nodes */}
             {[
-              { name: "DSA Valley", x: '60%', y: '16%' },
-              { name: "ML Volcano", x: '42%', y: '30%' },
-              { name: "Deep Learning Academy", x: '60%', y: '42%' },
-              { name: "LLM Galaxy", x: '25%', y: '65%' },
-              { name: "RAG Library", x: '50%', y: '72%' },
-              { name: "CL Agent Empire", x: '82%', y: '68%' }
+              { id: 'dsa', name: "DSA Valley", x: '60%', y: '16%' },
+              { id: 'ml', name: "ML Volcano", x: '42%', y: '30%' },
+              { id: 'deeplearning', name: "DL Academy", x: '60%', y: '42%' },
+              { id: 'llm', name: "LLM Galaxy", x: '25%', y: '65%' },
+              { id: 'rag', name: "RAG Library", x: '50%', y: '72%' },
+              { id: 'agent', name: "AI Agent Empire", x: '82%', y: '68%' }
             ].map((node, i) => (
               <div
                 key={i}
                 style={{ left: node.x, top: node.y }}
+                onMouseEnter={() => { sound.playClick(); setHoveredWorld(node.id); }}
+                onMouseLeave={() => setHoveredWorld(null)}
                 onClick={() => sound.playQuestFail()}
-                className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer opacity-75 group bg-slate-950/80 border border-purple-500/20 p-2 rounded-lg text-center min-w-[90px] hover:border-purple-500/40 hover:opacity-100 transition-all"
+                className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer opacity-75 group bg-slate-950/90 border border-purple-500/20 px-2.5 py-1.5 rounded-lg text-center min-w-[95px] hover:border-purple-500/40 hover:opacity-100 transition-all shadow-[0_0_8px_rgba(168,85,247,0.05)]"
               >
                 <div className="text-[8px] font-bold text-slate-400 tracking-wider uppercase flex items-center justify-center gap-1">
                   <span>🔒</span> {node.name}
@@ -231,8 +322,64 @@ export const LandingPage: React.FC = () => {
               </div>
             ))}
 
+            {/* Tooltip Hover Overlay */}
+            <AnimatePresence>
+              {hoveredWorld && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  className="absolute bottom-6 left-6 right-6 bg-slate-950/95 border border-purple-500/30 p-4 rounded-xl shadow-[0_0_20px_rgba(168,85,247,0.25)] text-left font-mono"
+                >
+                  <h4 className="text-xs font-bold text-cyan-400 uppercase tracking-widest">
+                    {worldDetails[hoveredWorld].title}
+                  </h4>
+                  <p className="text-[10px] text-slate-400 mt-1 leading-normal">
+                    {worldDetails[hoveredWorld].desc}
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
           </div>
 
+        </section>
+
+        {/* JOURNEY TIMELINE SCROLL DECK */}
+        <section id="timeline" className="py-8 space-y-8 text-center">
+          <div className="space-y-1">
+            <span className="text-[9px] text-purple-400 font-mono font-bold tracking-widest uppercase">
+              // ARCHITECTURE LOGS
+            </span>
+            <h2 className="text-2xl font-black uppercase tracking-wider text-white">
+              JOURNEY TIMELINE
+            </h2>
+            <p className="text-xs text-slate-500 font-mono max-w-sm mx-auto uppercase tracking-wider">
+              Follow the steps to restore the broken coding matrix
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 max-w-5xl mx-auto text-left font-mono">
+            {[
+              { num: "01", title: "SUMMON CHAMPION", desc: "Choose your character archetype, link your custom AI companion, and bind your neural keyname." },
+              { num: "02", title: "ENTER PYTHON FOREST", desc: "Commence quest trials to learn alchemical data types, variables, loops, lists, and class summons." },
+              { num: "03", title: "SOLVE INTERACTIVE DUNGEONS", desc: "Write production code inside the Monaco editor workspace and compile locally using WASM Pyodide." },
+              { num: "04", title: "RESTORE MEMORY REGISTERS", desc: "Claim gold coins and experience points (XP) to level up and verify systems as you fix compiler errors." },
+              { num: "05", title: "UNLEASH FUTURE WORLDS", desc: "Ascend to higher kingdoms to master DSA Valley, machine learning volcanoes, and LLM neural galaxies." }
+            ].map((step, idx) => (
+              <div
+                key={idx}
+                className="bg-slate-950/60 border border-purple-500/10 p-5 rounded-2xl flex flex-col justify-between min-h-[160px] hover:border-cyan-400/30 transition-all shadow-[0_0_8px_rgba(168,85,247,0.02)]"
+              >
+                <div className="flex justify-between items-center text-slate-500 border-b border-purple-500/10 pb-2 mb-3">
+                  <span className="text-xs font-black text-cyan-400">{step.num}</span>
+                  <span className="text-[8px] uppercase font-bold">handshake_ok</span>
+                </div>
+                <h4 className="text-[10px] font-black text-white uppercase tracking-wider leading-snug">{step.title}</h4>
+                <p className="text-[9px] text-slate-400 leading-normal mt-2">{step.desc}</p>
+              </div>
+            ))}
+          </div>
         </section>
 
         {/* FEATURES ROW */}
@@ -244,8 +391,8 @@ export const LandingPage: React.FC = () => {
             { title: "Epic Worlds to Explore", desc: "From Forests to Galaxies, Your Adventure Awaits", icon: "⚔️" },
             { title: "AI Companion Guides You", desc: "Your Personal Mentor Through Every Step", icon: "🤖" }
           ].map((item, idx) => (
-            <div 
-              key={idx} 
+            <div
+              key={idx}
               className="flex items-start gap-2.5 p-3 rounded-lg border border-purple-500/5 bg-slate-950/30 text-left font-mono"
             >
               <span className="text-purple-400 font-bold text-base">{item.icon}</span>
@@ -258,8 +405,8 @@ export const LandingPage: React.FC = () => {
         </section>
 
         {/* BOTTOM GRID: COMPARISON & ACTION PANEL */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-          
+        <section id="why-fail" className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+
           {/* Column 1: Comparative Platforms */}
           <div className="bg-slate-950/40 border border-purple-500/10 p-6 rounded-2xl flex flex-col justify-between">
             <div className="space-y-1 mb-4">
@@ -272,7 +419,7 @@ export const LandingPage: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-11 border border-purple-500/15 rounded-xl overflow-hidden bg-slate-950/50">
-              
+
               {/* Traditional */}
               <div className="col-span-5 p-3.5 space-y-2 text-left font-mono text-[9px]">
                 <div className="font-extrabold text-red-500 border-b border-purple-500/10 pb-1.5 uppercase tracking-wider text-center">
@@ -319,9 +466,9 @@ export const LandingPage: React.FC = () => {
 
           {/* Column 2: Action Panel */}
           <div className="bg-slate-950/40 border border-purple-500/10 p-6 rounded-2xl relative overflow-hidden flex flex-col justify-between min-h-[220px]">
-            <div 
+            <div
               className="absolute inset-0 bg-cover bg-center z-0 pointer-events-none opacity-60"
-              style={{ backgroundImage: 'url("/assets/landing_crystal.png")' }}
+              style={{ backgroundImage: 'url("/assets/sololevelling.jpg")' }}
             />
             <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/70 to-transparent z-10 pointer-events-none" />
 
@@ -377,7 +524,7 @@ export const LandingPage: React.FC = () => {
               className="w-full max-w-lg border border-cyan-400/40 bg-slate-900 p-6 rounded-2xl shadow-[0_0_50px_rgba(6,182,212,0.25)] relative font-mono text-slate-100"
             >
               {/* Close Button */}
-              <button 
+              <button
                 onClick={() => { sound.playClick(); setShowDemo(false); setDemoStep(0); }}
                 className="absolute top-4 right-4 text-slate-500 hover:text-cyan-400 transition-colors cursor-pointer text-sm font-bold"
               >
