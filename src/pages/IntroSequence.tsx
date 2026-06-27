@@ -18,23 +18,23 @@ export const IntroSequence: React.FC = () => {
 
   const slides: IntroSlide[] = [
     {
-      image: '/assets/intro_city.png',
-      narrative: 'Long ago... The world was powered by Code.',
+      image: 'assets/city.png',
+      narrative: ' Long ago... The world was powered by Code.',
       hlWord: 'Code.'
     },
     {
-      image: '/assets/intro_crystals.png',
-      narrative: 'One day... The core Code Fragments were stolen.',
+      image: '/assets/monster.jpg',
+      narrative: '  One day... The core Fragments were stolen.',
       hlWord: 'Fragments'
     },
     {
-      image: '/assets/intro_collapse.png',
-      narrative: 'Kingdoms began to collapse into fragmentation errors.',
-      hlWord: 'collapse'
+      image: '/assets/demolished.jpg',
+      narrative: ' Kingdoms began to collapse into fragmentation errors.',
+
     },
     {
-      image: '/assets/intro_hero.png',
-      narrative: 'Only a true programmer can restore them. The adventure begins...',
+      image: '/assets/heroanime.png',
+      narrative: '  Only a true programmer can restore them. The adventure begins...',
       hlWord: 'programmer'
     }
   ];
@@ -101,7 +101,7 @@ export const IntroSequence: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-950 flex flex-col justify-between items-center relative overflow-hidden font-mono select-none">
-      
+
       {/* Full-bleed background slideshow image with transitions */}
       <div className="absolute inset-0 z-0">
         <AnimatePresence mode="wait">
@@ -115,7 +115,7 @@ export const IntroSequence: React.FC = () => {
             style={{ backgroundImage: `url(${currentSlide.image})` }}
           />
         </AnimatePresence>
-        
+
         {/* Soft dark vignette gradient overlay for depth */}
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-slate-950/50 pointer-events-none" />
       </div>
@@ -125,7 +125,7 @@ export const IntroSequence: React.FC = () => {
         <span className="text-xs font-bold text-cyan-400 tracking-widest border border-cyan-400/30 px-2 py-0.5 rounded bg-slate-950/80 backdrop-blur-sm">
           CONSOLE::RESTORATION_LOG
         </span>
-        <button 
+        <button
           onClick={() => navigate('/create-character')}
           className="text-[10px] text-slate-400 hover:text-white uppercase tracking-widest bg-slate-950/80 px-2.5 py-1 rounded border border-purple-500/20 transition-all cursor-pointer"
         >
